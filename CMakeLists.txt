@@ -174,4 +174,4 @@ add_executable(zaidimas_nd
         zaidimas/zaidimas.vcxproj
         zaidimas/zaidimas.vcxproj.filters
         .gitignore
-        README.md)
+)
