@@ -1,177 +1,118 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.20)
 project(zaidimas_nd)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-include_directories(SFML/include)
-include_directories(SFML/include/SFML)
-include_directories(SFML/include/SFML/Audio)
-include_directories(SFML/include/SFML/Graphics)
-include_directories(SFML/include/SFML/Network)
-include_directories(SFML/include/SFML/System)
-include_directories(SFML/include/SFML/Window)
-include_directories(zaidimas/src)
+# ------------------------------------------------------
+# SFML KONFIGŪRACIJA
+# Automatiškai parenka tinkamą SFML aplanką (SFML_aaa arba SFML)
+# ------------------------------------------------------
+if (EXISTS "${CMAKE_SOURCE_DIR}/SFML_aaa")
+    set(SFML_ROOT "${CMAKE_SOURCE_DIR}/SFML_aaa")
+else()
+    set(SFML_ROOT "${CMAKE_SOURCE_DIR}/SFML")
+endif()
 
+set(SFML_INCLUDE_DIR "${SFML_ROOT}/include")
+set(SFML_LIB_DIR "${SFML_ROOT}/lib")
+
+include_directories(${SFML_INCLUDE_DIR})
+link_directories(${SFML_LIB_DIR})
+
+# ------------------------------------------------------
+# STATINIS SFML NAUDOJIMAS (tas pats, kaip VS projekte)
+# ------------------------------------------------------
+add_definitions(-DSFML_STATIC)
+
+# ------------------------------------------------------
+# PROJEKTO ŠALTINIAI
+# ------------------------------------------------------
 add_executable(zaidimas_nd
-        .idea/.gitignore
-        .idea/editor.xml
-        .idea/modules.xml
-        .idea/vcs.xml
-        .idea/zaidimas_nd.iml
-        SFML/include/SFML/Audio/AlResource.hpp
-        SFML/include/SFML/Audio/Export.hpp
-        SFML/include/SFML/Audio/InputSoundFile.hpp
-        SFML/include/SFML/Audio/Listener.hpp
-        SFML/include/SFML/Audio/Music.hpp
-        SFML/include/SFML/Audio/OutputSoundFile.hpp
-        SFML/include/SFML/Audio/Sound.hpp
-        SFML/include/SFML/Audio/SoundBuffer.hpp
-        SFML/include/SFML/Audio/SoundBufferRecorder.hpp
-        SFML/include/SFML/Audio/SoundFileFactory.hpp
-        SFML/include/SFML/Audio/SoundFileFactory.inl
-        SFML/include/SFML/Audio/SoundFileReader.hpp
-        SFML/include/SFML/Audio/SoundFileWriter.hpp
-        SFML/include/SFML/Audio/SoundRecorder.hpp
-        SFML/include/SFML/Audio/SoundSource.hpp
-        SFML/include/SFML/Audio/SoundStream.hpp
-        SFML/include/SFML/Graphics/BlendMode.hpp
-        SFML/include/SFML/Graphics/CircleShape.hpp
-        SFML/include/SFML/Graphics/Color.hpp
-        SFML/include/SFML/Graphics/ConvexShape.hpp
-        SFML/include/SFML/Graphics/Drawable.hpp
-        SFML/include/SFML/Graphics/Export.hpp
-        SFML/include/SFML/Graphics/Font.hpp
-        SFML/include/SFML/Graphics/Glsl.hpp
-        SFML/include/SFML/Graphics/Glsl.inl
-        SFML/include/SFML/Graphics/Glyph.hpp
-        SFML/include/SFML/Graphics/Image.hpp
-        SFML/include/SFML/Graphics/PrimitiveType.hpp
-        SFML/include/SFML/Graphics/Rect.hpp
-        SFML/include/SFML/Graphics/Rect.inl
-        SFML/include/SFML/Graphics/RectangleShape.hpp
-        SFML/include/SFML/Graphics/RenderStates.hpp
-        SFML/include/SFML/Graphics/RenderTarget.hpp
-        SFML/include/SFML/Graphics/RenderTexture.hpp
-        SFML/include/SFML/Graphics/RenderWindow.hpp
-        SFML/include/SFML/Graphics/Shader.hpp
-        SFML/include/SFML/Graphics/Shape.hpp
-        SFML/include/SFML/Graphics/Sprite.hpp
-        SFML/include/SFML/Graphics/Text.hpp
-        SFML/include/SFML/Graphics/Texture.hpp
-        SFML/include/SFML/Graphics/Transform.hpp
-        SFML/include/SFML/Graphics/Transformable.hpp
-        SFML/include/SFML/Graphics/Vertex.hpp
-        SFML/include/SFML/Graphics/VertexArray.hpp
-        SFML/include/SFML/Graphics/VertexBuffer.hpp
-        SFML/include/SFML/Graphics/View.hpp
-        SFML/include/SFML/Network/Export.hpp
-        SFML/include/SFML/Network/Ftp.hpp
-        SFML/include/SFML/Network/Http.hpp
-        SFML/include/SFML/Network/IpAddress.hpp
-        SFML/include/SFML/Network/Packet.hpp
-        SFML/include/SFML/Network/Socket.hpp
-        SFML/include/SFML/Network/SocketHandle.hpp
-        SFML/include/SFML/Network/SocketSelector.hpp
-        SFML/include/SFML/Network/TcpListener.hpp
-        SFML/include/SFML/Network/TcpSocket.hpp
-        SFML/include/SFML/Network/UdpSocket.hpp
-        SFML/include/SFML/System/Clock.hpp
-        SFML/include/SFML/System/Err.hpp
-        SFML/include/SFML/System/Export.hpp
-        SFML/include/SFML/System/FileInputStream.hpp
-        SFML/include/SFML/System/InputStream.hpp
-        SFML/include/SFML/System/Lock.hpp
-        SFML/include/SFML/System/MemoryInputStream.hpp
-        SFML/include/SFML/System/Mutex.hpp
-        SFML/include/SFML/System/NativeActivity.hpp
-        SFML/include/SFML/System/NonCopyable.hpp
-        SFML/include/SFML/System/Sleep.hpp
-        SFML/include/SFML/System/String.hpp
-        SFML/include/SFML/System/String.inl
-        SFML/include/SFML/System/Thread.hpp
-        SFML/include/SFML/System/Thread.inl
-        SFML/include/SFML/System/ThreadLocal.hpp
-        SFML/include/SFML/System/ThreadLocalPtr.hpp
-        SFML/include/SFML/System/ThreadLocalPtr.inl
-        SFML/include/SFML/System/Time.hpp
-        SFML/include/SFML/System/Utf.hpp
-        SFML/include/SFML/System/Utf.inl
-        SFML/include/SFML/System/Vector2.hpp
-        SFML/include/SFML/System/Vector2.inl
-        SFML/include/SFML/System/Vector3.hpp
-        SFML/include/SFML/System/Vector3.inl
-        SFML/include/SFML/Window/Clipboard.hpp
-        SFML/include/SFML/Window/Context.hpp
-        SFML/include/SFML/Window/ContextSettings.hpp
-        SFML/include/SFML/Window/Cursor.hpp
-        SFML/include/SFML/Window/Event.hpp
-        SFML/include/SFML/Window/Export.hpp
-        SFML/include/SFML/Window/GlResource.hpp
-        SFML/include/SFML/Window/Joystick.hpp
-        SFML/include/SFML/Window/Keyboard.hpp
-        SFML/include/SFML/Window/Mouse.hpp
-        SFML/include/SFML/Window/Sensor.hpp
-        SFML/include/SFML/Window/Touch.hpp
-        SFML/include/SFML/Window/VideoMode.hpp
-        SFML/include/SFML/Window/Vulkan.hpp
-        SFML/include/SFML/Window/Window.hpp
-        SFML/include/SFML/Window/WindowBase.hpp
-        SFML/include/SFML/Window/WindowHandle.hpp
-        SFML/include/SFML/Window/WindowStyle.hpp
-        SFML/include/SFML/Audio.hpp
-        SFML/include/SFML/Config.hpp
-        SFML/include/SFML/GpuPreference.hpp
-        SFML/include/SFML/Graphics.hpp
-        SFML/include/SFML/Main.hpp
-        SFML/include/SFML/Network.hpp
-        SFML/include/SFML/OpenGL.hpp
-        SFML/include/SFML/System.hpp
-        SFML/include/SFML/Window.hpp
-        SFML/lib/flac.lib
-        SFML/lib/freetype.lib
-        SFML/lib/ogg.lib
-        SFML/lib/openal32.lib
-        SFML/lib/sfml-audio-d.lib
-        SFML/lib/sfml-audio-s-d.lib
-        SFML/lib/sfml-audio-s.lib
-        SFML/lib/sfml-audio.lib
-        SFML/lib/sfml-graphics-d.lib
-        SFML/lib/sfml-graphics-s-d.lib
-        SFML/lib/sfml-graphics-s.lib
-        SFML/lib/sfml-graphics.lib
-        SFML/lib/sfml-main-d.lib
-        SFML/lib/sfml-main.lib
-        SFML/lib/sfml-network-d.lib
-        SFML/lib/sfml-network-s-d.lib
-        SFML/lib/sfml-network-s.lib
-        SFML/lib/sfml-network.lib
-        SFML/lib/sfml-system-d.lib
-        SFML/lib/sfml-system-s-d.lib
-        SFML/lib/sfml-system-s.lib
-        SFML/lib/sfml-system.lib
-        SFML/lib/sfml-window-d.lib
-        SFML/lib/sfml-window-s-d.lib
-        SFML/lib/sfml-window-s.lib
-        SFML/lib/sfml-window.lib
-        SFML/lib/vorbis.lib
-        SFML/lib/vorbisenc.lib
-        SFML/lib/vorbisfile.lib
-        SFML/license.md
-        zaidimas/resources/arialbd.ttf
-        zaidimas/resources/background.png
-        zaidimas/resources/doodle1.png
-        zaidimas/resources/doodle2.png
-        zaidimas/resources/music.wav
-        zaidimas/resources/platform.png
-        zaidimas/src/defines.h
-        zaidimas/src/main.cpp
-        zaidimas/src/objects.h
-        zaidimas/src/utils.cpp
-        zaidimas/src/utils.h
-        zaidimas/openal32.dll
-        zaidimas/zaidimas.exe
-        zaidimas/zaidimas.sln
-        zaidimas/zaidimas.vcxproj
-        zaidimas/zaidimas.vcxproj.filters
-        .gitignore
+        src/main.cpp
+        src/utils.cpp
 )
+
+# ------------------------------------------------------
+# LINKINAMOS BIBLIOTEKOS (pagal tavo .vcxproj)
+# ------------------------------------------------------
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Linkinamos DEBUG bibliotekos")
+
+    target_link_libraries(zaidimas_nd
+            sfml-graphics-s-d
+            sfml-window-s-d
+            sfml-system-s-d
+            sfml-audio-s-d
+            sfml-main-d
+            openal32
+            opengl32
+            winmm
+            gdi32
+            freetype
+            flac
+            vorbisenc
+            vorbisfile
+            vorbis
+            ogg
+            kernel32
+            user32
+            winspool
+            comdlg32
+            advapi32
+            shell32
+            ole32
+            oleaut32
+            uuid
+            odbc32
+            odbccp32
+    )
+else()
+    message(STATUS "Linkinamos RELEASE bibliotekos")
+
+    target_link_libraries(zaidimas_nd
+            sfml-graphics-s
+            sfml-window-s
+            sfml-system-s
+            sfml-audio-s
+            sfml-main
+            openal32
+            opengl32
+            winmm
+            gdi32
+            freetype
+            flac
+            vorbisenc
+            vorbisfile
+            vorbis
+            ogg
+            kernel32
+            user32
+            winspool
+            comdlg32
+            advapi32
+            shell32
+            ole32
+            oleaut32
+            uuid
+            odbc32
+            odbccp32
+    )
+endif()
+
+# ------------------------------------------------------
+# AUTOMATIŠKAS RESURSŲ KOPIJAVIMAS
+# (kad veiktų background.png, doodle*.png, fontai ir muzika)
+# ------------------------------------------------------
+add_custom_command(TARGET zaidimas_nd POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/resources"
+        "$<TARGET_FILE_DIR:zaidimas_nd>/resources"
+)
+
+# ------------------------------------------------------
+# INFORMACIJA KONSOLĖJE
+# ------------------------------------------------------
+message(STATUS "SFML_ROOT     = ${SFML_ROOT}")
+message(STATUS "SFML_INCLUDE  = ${SFML_INCLUDE_DIR}")
+message(STATUS "SFML_LIB_DIR  = ${SFML_LIB_DIR}")
+message(STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
