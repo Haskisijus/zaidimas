@@ -120,12 +120,22 @@ int main()
 				app.close();
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-			sprPlayer.setTexture(tPlayer1);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
-			sprPlayer.setTexture(tPlayer2);
-			dy -= 0.21f;
+			if (currentFuel > 0)
+			{
+				sprPlayer.setTexture(tPlayer2);
+				dy -= 0.5f;
+				currentFuel -= 1.5f;
+			}
+			else
+			{
+				sprPlayer.setTexture(tPlayer1);
+			}
+		}
+		else
+		{
+			sprPlayer.setTexture(tPlayer1);
 		}
 
 		UpdatePositions(player, plates, dy, score);
