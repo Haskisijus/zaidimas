@@ -103,6 +103,28 @@ int main()
     textStandardFuel.setOutlineColor(Color::Black);
     textStandardFuel.setPosition(220.f, 50.f);
 
+    sf::Text textLowFuel;
+    textLowFuel.setFont(font);
+    textLowFuel.setString("LOW FUEL!");
+    textLowFuel.setCharacterSize(35);
+    textLowFuel.setFillColor(Color::Red);
+    textLowFuel.setOutlineThickness(2);
+    textLowFuel.setOutlineColor(Color::Yellow);
+    FloatRect lowRect = textLowFuel.getLocalBounds();
+    textLowFuel.setOrigin(lowRect.left + lowRect.width/2.0f, lowRect.top + lowRect.height/2.0f);
+    textLowFuel.setPosition(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 30.f);
+
+    sf::Text textNoFuel;
+    textNoFuel.setFont(font);
+    textNoFuel.setString("NO FUEL!");
+    textNoFuel.setCharacterSize(35);
+    textNoFuel.setFillColor(Color::Red);
+    textNoFuel.setOutlineThickness(2);
+    textNoFuel.setOutlineColor(Color::Black);
+    FloatRect noRect = textNoFuel.getLocalBounds();
+    textNoFuel.setOrigin(noRect.left + noRect.width/2.0f, noRect.top + noRect.height/2.0f);
+    textNoFuel.setPosition(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 30.f);
+
     sf::Text textGameOver;
     textGameOver.setFont(font);
     textGameOver.setString("GAME OVER");
@@ -168,8 +190,17 @@ int main()
     RectangleShape fuelBar;
     fuelBar.setPosition(10, 50);
 
+    sf::Clock blinkClock;
+    bool blinkState = true;
+
     while (app.isOpen())
     {
+       if (blinkClock.getElapsedTime().asSeconds() > 0.5f)
+       {
+           blinkState = !blinkState;
+           blinkClock.restart();
+       }
+
        Event e;
        while (app.pollEvent(e))
        {
@@ -276,6 +307,21 @@ int main()
        else
        {
            app.draw(textStandardFuel);
+       }
+
+       if (!isGameOver && !isUnlimitedFuel)
+       {
+           if (currentFuel <= 0.0f)
+           {
+               app.draw(textNoFuel);
+           }
+           else if (currentFuel < 25.0f)
+           {
+               if (blinkState)
+               {
+                   app.draw(textLowFuel);
+               }
+           }
        }
 
        if (isGameOver)
