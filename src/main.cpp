@@ -53,7 +53,6 @@ void UpdatePositions(Player &player, Plate plates[], float &dy, float &score, fl
     {
        if (utils::InOnPlate(player, plates[i]) && dy > 0)
        {
-          dy = PLAYER_JUMP_V;
           currentFuel = maxFuel;
        }
     }
