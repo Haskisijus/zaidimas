@@ -54,10 +54,9 @@ void UpdatePositions(Player &player, Plate plates[], float &dy, float &score, fl
        if (utils::InOnPlate(player, plates[i]) && dy > 0)
        {
           currentFuel = maxFuel;
-          // Šios dvi eilutės padaro platformas kietas:
-          player.y -= dy; // Kilstelime žaidėją atgal ant platformos viršaus
-          dy = 0;         // Sustabdome kritimo greitį
-          break;          // Radome pagrindą, toliau tikrinti nebereikia
+          player.y -= dy;
+          dy = 0;
+          break;
        }
     }
 }
@@ -145,6 +144,7 @@ int main()
     float maxFuel = 100.0f;
     float currentFuel = maxFuel;
     bool isGameOver = false;
+    bool isUnlimitedFuel = false;
 
     RectangleShape fuelBar;
     fuelBar.setPosition(10, 50);
@@ -156,6 +156,11 @@ int main()
        {
           if (e.type == Event::Closed)
              app.close();
+
+          if (e.type == Event::KeyPressed && e.key.code == Keyboard::N)
+          {
+              isUnlimitedFuel = !isUnlimitedFuel;
+          }
 
           if (isGameOver)
           {
@@ -169,6 +174,7 @@ int main()
                       score = 0;
                       dy = 0;
                       currentFuel = maxFuel;
+                      isUnlimitedFuel = false;
                       player.x = WINDOW_WIDTH / 2;
                       player.y = MAX_PLAYER_Y;
 
@@ -186,11 +192,14 @@ int main()
        {
            if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
            {
-              if (currentFuel > 0)
+              if (isUnlimitedFuel || currentFuel > 0)
               {
                  sprPlayer.setTexture(tPlayer2);
                  dy -= 0.5f;
-                 currentFuel -= 1.5f;
+                 if (!isUnlimitedFuel)
+                 {
+                     currentFuel -= 1.5f;
+                 }
               }
               else
               {
@@ -222,12 +231,20 @@ int main()
        app.draw(text);
 
        if (currentFuel < 0) currentFuel = 0;
-       fuelBar.setSize(Vector2f(200.0f * (currentFuel / maxFuel), 20.0f));
 
-       if(currentFuel < 20)
-           fuelBar.setFillColor(Color::Red);
+       if (isUnlimitedFuel)
+       {
+           fuelBar.setFillColor(Color(138, 43, 226));
+           fuelBar.setSize(Vector2f(200.0f, 20.0f));
+       }
        else
-           fuelBar.setFillColor(Color::Green);
+       {
+           fuelBar.setSize(Vector2f(200.0f * (currentFuel / maxFuel), 20.0f));
+           if(currentFuel < 20)
+               fuelBar.setFillColor(Color::Red);
+           else
+               fuelBar.setFillColor(Color::Green);
+       }
 
        app.draw(fuelBar);
 
