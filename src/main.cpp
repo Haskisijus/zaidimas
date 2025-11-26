@@ -67,8 +67,8 @@ int main()
 
     Texture tBackground, tPlayer1, tPlatform, tPlayer2;
     tBackground.loadFromFile("resources/background.png");
-    tPlayer1.loadFromFile("resources/doodle1.png");
-    tPlayer2.loadFromFile("resources/doodle2.png");
+    tPlayer1.loadFromFile("resources/raketa1.png");
+    tPlayer2.loadFromFile("resources/raketa2.png");
     tPlatform.loadFromFile("resources/platform.png");
 
     sf::Font font;
