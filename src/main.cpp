@@ -93,7 +93,24 @@ int main()
 
     FloatRect textRect = textGameOver.getLocalBounds();
     textGameOver.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
-    textGameOver.setPosition(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
+    textGameOver.setPosition(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f - 50.0f);
+
+    RectangleShape restartBtn;
+    restartBtn.setSize(Vector2f(200, 50));
+    restartBtn.setFillColor(Color::Blue);
+    restartBtn.setOutlineColor(Color::White);
+    restartBtn.setOutlineThickness(2);
+    restartBtn.setOrigin(100, 25);
+    restartBtn.setPosition(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f + 50.0f);
+
+    sf::Text textRestart;
+    textRestart.setFont(font);
+    textRestart.setString("RESTART");
+    textRestart.setCharacterSize(30);
+    textRestart.setFillColor(Color::White);
+    FloatRect restartRect = textRestart.getLocalBounds();
+    textRestart.setOrigin(restartRect.left + restartRect.width/2.0f, restartRect.top + restartRect.height/2.0f);
+    textRestart.setPosition(restartBtn.getPosition());
 
     Sprite sprBackground(tBackground);
     Sprite sprPlayer(tPlayer1);
@@ -136,6 +153,30 @@ int main()
        {
           if (e.type == Event::Closed)
              app.close();
+
+          if (isGameOver)
+          {
+              if ((e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Left) ||
+                  (e.type == Event::KeyPressed && e.key.code == Keyboard::Enter))
+              {
+                  Vector2f mousePos = app.mapPixelToCoords(Mouse::getPosition(app));
+                  if (restartBtn.getGlobalBounds().contains(mousePos) || e.type == Event::KeyPressed)
+                  {
+                      isGameOver = false;
+                      score = 0;
+                      dy = 0;
+                      currentFuel = maxFuel;
+                      player.x = WINDOW_WIDTH / 2;
+                      player.y = MAX_PLAYER_Y;
+
+                      for (int i = 0; i < PLATES_AMOUNT; ++i)
+                      {
+                         plates[i].x = float(rand() % (WINDOW_WIDTH - PLATES_WIDTH));
+                         plates[i].y = (float)WINDOW_HEIGHT / PLATES_AMOUNT * i;
+                      }
+                  }
+              }
+          }
        }
 
        if (!isGameOver)
@@ -190,6 +231,8 @@ int main()
        if (isGameOver)
        {
            app.draw(textGameOver);
+           app.draw(restartBtn);
+           app.draw(textRestart);
        }
 
        app.display();
