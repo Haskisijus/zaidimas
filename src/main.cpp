@@ -6,14 +6,17 @@
 using namespace sf;
 using namespace std;
 
-void UpdatePositions(Player &player, Plate plates[], float &dy, float &score, float &currentFuel, float maxFuel)
+void UpdatePositions(Player &player, Plate plates[], float &dy, float &score, float &currentFuel, float maxFuel, bool &isGameOver)
 {
     const float dx = 3.5f;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-       player.x -= dx;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-       player.x += dx;
+    if (!isGameOver)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+           player.x -= dx;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+           player.x += dx;
+    }
 
     if (player.x + PLAYER_WIDTH / 2 > WINDOW_WIDTH)
        player.x = -PLAYER_WIDTH / 2;
@@ -25,7 +28,9 @@ void UpdatePositions(Player &player, Plate plates[], float &dy, float &score, fl
     player.y += dy;
 
     if (player.y > WINDOW_HEIGHT)
-       dy = PLAYER_JUMP_V;
+    {
+       isGameOver = true;
+    }
 
     if (player.y < MAX_PLAYER_Y)
     {
@@ -78,6 +83,18 @@ int main()
     text.setOutlineColor(Color::Black);
     text.setPosition(WINDOW_WIDTH / 2.0f - 25.f, 10.f);
 
+    sf::Text textGameOver;
+    textGameOver.setFont(font);
+    textGameOver.setString("GAME OVER");
+    textGameOver.setCharacterSize(60);
+    textGameOver.setFillColor(Color::Red);
+    textGameOver.setOutlineThickness(3);
+    textGameOver.setOutlineColor(Color::Black);
+
+    FloatRect textRect = textGameOver.getLocalBounds();
+    textGameOver.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
+    textGameOver.setPosition(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
+
     Sprite sprBackground(tBackground);
     Sprite sprPlayer(tPlayer1);
     Sprite sprPlatform(tPlatform);
@@ -107,6 +124,7 @@ int main()
     float score = 0;
     float maxFuel = 100.0f;
     float currentFuel = maxFuel;
+    bool isGameOver = false;
 
     RectangleShape fuelBar;
     fuelBar.setPosition(10, 50);
@@ -120,25 +138,28 @@ int main()
              app.close();
        }
 
-       if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+       if (!isGameOver)
        {
-          if (currentFuel > 0)
-          {
-             sprPlayer.setTexture(tPlayer2);
-             dy -= 0.5f;
-             currentFuel -= 1.5f;
-          }
-          else
-          {
-             sprPlayer.setTexture(tPlayer1);
-          }
-       }
-       else
-       {
-          sprPlayer.setTexture(tPlayer1);
-       }
+           if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+           {
+              if (currentFuel > 0)
+              {
+                 sprPlayer.setTexture(tPlayer2);
+                 dy -= 0.5f;
+                 currentFuel -= 1.5f;
+              }
+              else
+              {
+                 sprPlayer.setTexture(tPlayer1);
+              }
+           }
+           else
+           {
+              sprPlayer.setTexture(tPlayer1);
+           }
 
-       UpdatePositions(player, plates, dy, score, currentFuel, maxFuel);
+           UpdatePositions(player, plates, dy, score, currentFuel, maxFuel, isGameOver);
+       }
 
        app.clear();
 
@@ -165,6 +186,11 @@ int main()
            fuelBar.setFillColor(Color::Green);
 
        app.draw(fuelBar);
+
+       if (isGameOver)
+       {
+           app.draw(textGameOver);
+       }
 
        app.display();
     }
