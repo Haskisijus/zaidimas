@@ -85,6 +85,24 @@ int main()
     text.setOutlineColor(Color::Black);
     text.setPosition(WINDOW_WIDTH / 2.0f - 25.f, 10.f);
 
+    sf::Text textAtomicFuel;
+    textAtomicFuel.setFont(font);
+    textAtomicFuel.setString("ATOMIC FUEL");
+    textAtomicFuel.setCharacterSize(20);
+    textAtomicFuel.setFillColor(Color(138, 43, 226));
+    textAtomicFuel.setOutlineThickness(1);
+    textAtomicFuel.setOutlineColor(Color::Black);
+    textAtomicFuel.setPosition(220.f, 50.f);
+
+    sf::Text textStandardFuel;
+    textStandardFuel.setFont(font);
+    textStandardFuel.setString("STANDARD FUEL");
+    textStandardFuel.setCharacterSize(20);
+    textStandardFuel.setFillColor(Color::Green);
+    textStandardFuel.setOutlineThickness(1);
+    textStandardFuel.setOutlineColor(Color::Black);
+    textStandardFuel.setPosition(220.f, 50.f);
+
     sf::Text textGameOver;
     textGameOver.setFont(font);
     textGameOver.setString("GAME OVER");
@@ -128,9 +146,6 @@ int main()
 #endif
 
     Player player;
-    player.x = WINDOW_WIDTH / 2;
-    player.y = MAX_PLAYER_Y;
-
     Plate plates[PLATES_AMOUNT];
 
     for (int i = 0; i < PLATES_AMOUNT; ++i)
@@ -138,6 +153,10 @@ int main()
        plates[i].x = float(rand() % (WINDOW_WIDTH - PLATES_WIDTH));
        plates[i].y = (float)WINDOW_HEIGHT / PLATES_AMOUNT * i;
     }
+
+    int startPlatIdx = PLATES_AMOUNT - 3;
+    player.x = plates[startPlatIdx].x + PLATES_WIDTH / 2.0f - 44.0f;
+    player.y = plates[startPlatIdx].y - 73.0f;
 
     float dy = 0;
     float score = 0;
@@ -175,14 +194,16 @@ int main()
                       dy = 0;
                       currentFuel = maxFuel;
                       isUnlimitedFuel = false;
-                      player.x = WINDOW_WIDTH / 2;
-                      player.y = MAX_PLAYER_Y;
 
                       for (int i = 0; i < PLATES_AMOUNT; ++i)
                       {
                          plates[i].x = float(rand() % (WINDOW_WIDTH - PLATES_WIDTH));
                          plates[i].y = (float)WINDOW_HEIGHT / PLATES_AMOUNT * i;
                       }
+
+                      int startPlatIdx = PLATES_AMOUNT - 3;
+                      player.x = plates[startPlatIdx].x + PLATES_WIDTH / 2.0f - 44.0f;
+                      player.y = plates[startPlatIdx].y - 73.0f;
                   }
               }
           }
@@ -247,6 +268,15 @@ int main()
        }
 
        app.draw(fuelBar);
+
+       if (isUnlimitedFuel)
+       {
+           app.draw(textAtomicFuel);
+       }
+       else
+       {
+           app.draw(textStandardFuel);
+       }
 
        if (isGameOver)
        {
