@@ -54,6 +54,10 @@ void UpdatePositions(Player &player, Plate plates[], float &dy, float &score, fl
        if (utils::InOnPlate(player, plates[i]) && dy > 0)
        {
           currentFuel = maxFuel;
+          // Šios dvi eilutės padaro platformas kietas:
+          player.y -= dy; // Kilstelime žaidėją atgal ant platformos viršaus
+          dy = 0;         // Sustabdome kritimo greitį
+          break;          // Radome pagrindą, toliau tikrinti nebereikia
        }
     }
 }
