@@ -315,7 +315,7 @@ int main()
            {
                app.draw(textNoFuel);
            }
-           else if (currentFuel < 25.0f)
+           else if (currentFuel < maxFuel * 0.40f)
            {
                if (blinkState)
                {
