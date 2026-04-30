@@ -1,10 +1,14 @@
 #pragma once
 
-struct Player;
-struct Plate;
+#include "objects.h"
 
-namespace utils
-{
-	bool IsBetween(float val, float rangeB, float rangeE);
-	bool InOnPlate(Player &player, Plate &plate);
+namespace utils {
+    // Patikrina, ar reikšmė yra tarp dviejų ribų
+    bool IsBetween(float val, float rangeB, float rangeE);
+
+    // Patikrina, ar žaidėjas yra ant platformos
+    bool InOnPlate(const Player& player, const Plate& plate);
+
+    // Palygina score įrašus
+    bool CompareScores(const ScoreEntry& a, const ScoreEntry& b);
 }

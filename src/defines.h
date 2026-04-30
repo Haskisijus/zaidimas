@@ -1,13 +1,25 @@
 #pragma once
 
-const int WINDOW_WIDTH = 400;	// ekrano plotis
-const int WINDOW_HEIGHT = 533;	// ekrano aukstis
-const float MAX_PLAYER_Y = 200;	// maksimalus aukstis, iki kurio pakyla zaidejas
+#include <string>
 
-const float PLAYER_WIDTH = 80;	// zaidejo plotis
+// Ekrano nustatymai
+const int WINDOW_WIDTH = 400;
+const int WINDOW_HEIGHT = 533;
 
-const int PLATES_AMOUNT = 2;	// bus 10 ploksciu
-const int PLATES_WIDTH = 68;	// plokstes plotis
-const int PLATES_HEIGHT = 14;	// plokstes aukstis
+// Žaidėjo parametrai
+const float PLAYER_WIDTH = 50.f;
+const float MAX_PLAYER_Y = 200.f;
 
+// Platformų parametrai
+const int PLATES_AMOUNT = 10;
+const float PLATES_WIDTH = 68.f;
+const float PLATES_HEIGHT = 14.f;
+
+// Kuro parametrai
+const float MAX_FUEL = 100.0f;
+
+// Failai
+const std::string LEADERBOARD_FILE = "leaderboard.txt";
+
+// Komentarinimas skirti testui
 //#define SOUND_ON
