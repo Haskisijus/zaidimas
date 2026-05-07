@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iterator>
 
 void LeaderboardManager::Load() {
     leaderboard.clear();
@@ -16,20 +17,21 @@ void LeaderboardManager::Load() {
                 if (delimPos != std::string::npos) {
                     std::string name = line.substr(0, delimPos);
                     int scoreVal = stoi(line.substr(delimPos + 1));
-                    leaderboard.push_back({name, scoreVal});
+                    leaderboard.add({name, scoreVal});
                 }
             }
         }
         file.close();
-        sort(leaderboard.begin(), leaderboard.end(), utils::CompareScores);
+        leaderboard.sortDescending();
     }
 }
 
 void LeaderboardManager::Save() {
-    sort(leaderboard.begin(), leaderboard.end(), utils::CompareScores);
+    leaderboard.sortDescending();
     std::ofstream file(LEADERBOARD_FILE);
     if (file.is_open()) {
-        for (const auto& entry : leaderboard) {
+        const auto entries = leaderboard.toVector();
+        for (const auto& entry : entries) {
             file << entry.playerName << ":" << entry.score << "\n";
         }
         file.close();
@@ -37,25 +39,28 @@ void LeaderboardManager::Save() {
 }
 
 void LeaderboardManager::AddScore(const std::string& name, int score) {
-    leaderboard.push_back({name, score});
+    leaderboard.add({name, score});
     Save();
 }
 
-const std::vector<ScoreEntry>& LeaderboardManager::GetLeaderboard() const {
-    return leaderboard;
+std::vector<ScoreEntry> LeaderboardManager::GetLeaderboard() const {
+    return leaderboard.toVector();
 }
 
 std::string LeaderboardManager::GetFormattedLeaderboard(int maxEntries) const {
-    std::string result = "";
+    std::ostringstream result;
+    ScoreStorage snapshot = leaderboard;
+    snapshot.sortDescending();
     int count = 0;
-    for (const auto& entry : leaderboard) {
+    const auto entries = snapshot.toVector();
+    for (const auto& entry : entries) {
         if (count >= maxEntries) break;
-        result += entry.playerName + " - " + std::to_string(entry.score) + "\n";
+        result << entry << "\n";
         count++;
     }
-    if (result.empty()) {
-        result = "No scores yet!";
+    if (count == 0) {
+        return "No scores yet!";
     }
-    return result;
+    return result.str();
 }
 

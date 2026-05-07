@@ -11,7 +11,7 @@ const float PLAYER_WIDTH = 50.f;
 const float MAX_PLAYER_Y = 200.f;
 
 // Platformų parametrai
-const int PLATES_AMOUNT = 10;
+const int PLATES_AMOUNT = 6;  // Sumažintai - platformos retesnės
 const float PLATES_WIDTH = 68.f;
 const float PLATES_HEIGHT = 14.f;
 

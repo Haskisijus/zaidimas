@@ -184,6 +184,131 @@ namespace graphics {
         window.draw(platformRight);
     }
 
+    void DrawPlatformTyped(RenderWindow& window, const Plate& plate, float scaleX, float scaleY) {
+        float x = plate.x * scaleX;
+        float y = plate.y * scaleY;
+
+        if (plate.type == DANGER_PLATE) {
+            // Pavojinga raudona platforma
+            RectangleShape platformShadow(Vector2f(PLATES_WIDTH * scaleX, 3.f * scaleY));
+            platformShadow.setFillColor(Color(0, 0, 0, 80));
+            platformShadow.setPosition(x, y + 14.f * scaleY);
+            window.draw(platformShadow);
+
+            // Pagrindinė raudona platforma
+            RectangleShape platform(Vector2f(PLATES_WIDTH * scaleX, 14.f * scaleY));
+            platform.setPosition(x, y);
+            platform.setFillColor(Color(220, 40, 40));
+            window.draw(platform);
+
+            // Apačia - tamsesnė
+            RectangleShape platformBottom(Vector2f(PLATES_WIDTH * scaleX, 3.f * scaleY));
+            platformBottom.setPosition(x, y + 11.f * scaleY);
+            platformBottom.setFillColor(Color(150, 20, 20, 180));
+            window.draw(platformBottom);
+
+            // Šonai
+            RectangleShape platformLeft(Vector2f(2.f * scaleX, 14.f * scaleY));
+            platformLeft.setPosition(x, y);
+            platformLeft.setFillColor(Color(180, 30, 30));
+            window.draw(platformLeft);
+
+            RectangleShape platformRight(Vector2f(2.f * scaleX, 14.f * scaleY));
+            platformRight.setPosition(x + PLATES_WIDTH * scaleX - 2.f, y);
+            platformRight.setFillColor(Color(180, 30, 30));
+            window.draw(platformRight);
+
+            // Pavojaus simbolis - "X"
+            CircleShape warning1(1.5f * scaleX);
+            warning1.setFillColor(Color::White);
+            warning1.setPosition(x + 10.f * scaleX, y + 5.f * scaleY);
+            window.draw(warning1);
+
+            CircleShape warning2(1.5f * scaleX);
+            warning2.setFillColor(Color::White);
+            warning2.setPosition(x + PLATES_WIDTH * scaleX - 15.f * scaleX, y + 5.f * scaleY);
+            window.draw(warning2);
+
+        } else if (plate.type == FUEL_PLATE) {
+            // Kuro platformą - geltona
+            RectangleShape platformShadow(Vector2f(PLATES_WIDTH * scaleX, 3.f * scaleY));
+            platformShadow.setFillColor(Color(0, 0, 0, 60));
+            platformShadow.setPosition(x, y + 14.f * scaleY);
+            window.draw(platformShadow);
+
+            // Pagrindinė geltona platforma
+            RectangleShape platform(Vector2f(PLATES_WIDTH * scaleX, 14.f * scaleY));
+            platform.setPosition(x, y);
+            platform.setFillColor(Color(255, 200, 30));
+            window.draw(platform);
+
+            // Viršus - šviesesnė
+            RectangleShape platformTop(Vector2f(PLATES_WIDTH * scaleX - 2.f, 4.f * scaleY));
+            platformTop.setPosition(x + 1.f, y + 1.f * scaleY);
+            platformTop.setFillColor(Color(255, 240, 100, 200));
+            window.draw(platformTop);
+
+            // Apačia - tamsesnė
+            RectangleShape platformBottom(Vector2f(PLATES_WIDTH * scaleX, 3.f * scaleY));
+            platformBottom.setPosition(x, y + 11.f * scaleY);
+            platformBottom.setFillColor(Color(200, 150, 20, 150));
+            window.draw(platformBottom);
+
+            // Šonai
+            RectangleShape platformLeft(Vector2f(2.f * scaleX, 14.f * scaleY));
+            platformLeft.setPosition(x, y);
+            platformLeft.setFillColor(Color(200, 160, 20));
+            window.draw(platformLeft);
+
+            RectangleShape platformRight(Vector2f(2.f * scaleX, 14.f * scaleY));
+            platformRight.setPosition(x + PLATES_WIDTH * scaleX - 2.f, y);
+            platformRight.setFillColor(Color(200, 160, 20));
+            window.draw(platformRight);
+
+            // Kuro indicatoras - simbolis "F"
+            CircleShape fuelMarker(1.f * scaleX);
+            fuelMarker.setFillColor(Color::Red);
+            fuelMarker.setPosition(x + PLATES_WIDTH * scaleX / 2.f - 1.f * scaleX, y + 6.f * scaleY);
+            window.draw(fuelMarker);
+
+        } else {
+            // Normali žalia platforma
+            RectangleShape platformShadow(Vector2f(PLATES_WIDTH * scaleX + 2.f, 3.f * scaleY));
+            platformShadow.setFillColor(Color(0, 0, 0, 60));
+            platformShadow.setPosition(x - 1.f, y + 14.f * scaleY);
+            window.draw(platformShadow);
+
+            // Pagrindinė platforma
+            RectangleShape platform(Vector2f(PLATES_WIDTH * scaleX, 14.f * scaleY));
+            platform.setPosition(x, y);
+            platform.setFillColor(Color(80, 200, 80));
+            window.draw(platform);
+
+            // Platformos blizgesys
+            RectangleShape platformTop(Vector2f(PLATES_WIDTH * scaleX - 2.f, 4.f * scaleY));
+            platformTop.setPosition(x + 1.f, y + 1.f * scaleY);
+            platformTop.setFillColor(Color(150, 255, 150, 180));
+            window.draw(platformTop);
+
+            // Platformos apačia
+            RectangleShape platformBottom(Vector2f(PLATES_WIDTH * scaleX, 3.f * scaleY));
+            platformBottom.setPosition(x, y + 11.f * scaleY);
+            platformBottom.setFillColor(Color(40, 120, 40, 150));
+            window.draw(platformBottom);
+
+            // Platformos šonai
+            RectangleShape platformLeft(Vector2f(2.f * scaleX, 14.f * scaleY));
+            platformLeft.setPosition(x, y);
+            platformLeft.setFillColor(Color(50, 150, 50));
+            window.draw(platformLeft);
+
+            RectangleShape platformRight(Vector2f(2.f * scaleX, 14.f * scaleY));
+            platformRight.setPosition(x + PLATES_WIDTH * scaleX - 2.f, y);
+            platformRight.setFillColor(Color(50, 150, 50));
+            window.draw(platformRight);
+        }
+    }
+
     void DrawBackground(RenderWindow& window, float scaleX, float scaleY) {
         // Fonas
         RectangleShape backgroundTop(Vector2f(WINDOW_WIDTH * scaleX, WINDOW_HEIGHT * scaleY * 0.7f));

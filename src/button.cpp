@@ -8,12 +8,14 @@ Button::Button() : isHovered(false) {
     shape.setOrigin(100, 25);
 }
 
+Button::Button(const std::string& value, Font& font, unsigned int size) : Button() {
+    setText(value, font, static_cast<int>(size));
+    centerText();
+}
+
 void Button::setPosition(float x, float y) {
     shape.setPosition(x, y);
-    FloatRect textBounds = text.getLocalBounds();
-    float textX = x - textBounds.width / 2.f - textBounds.left;
-    float textY = y - textBounds.height / 2.f - textBounds.top;
-    text.setPosition(textX, textY);
+    centerText();
 }
 
 void Button::setText(const std::string& str, Font& font, int size) {
@@ -21,11 +23,20 @@ void Button::setText(const std::string& str, Font& font, int size) {
     text.setString(str);
     text.setCharacterSize(size);
     text.setFillColor(Color::White);
+    centerText();
+}
+
+void Button::centerText() {
+    FloatRect textBounds = text.getLocalBounds();
+    float x = shape.getPosition().x - textBounds.width / 2.f - textBounds.left;
+    float y = shape.getPosition().y - textBounds.height / 2.f - textBounds.top;
+    text.setPosition(x, y);
 }
 
 void Button::setSize(float width, float height) {
     shape.setSize(Vector2f(width, height));
     shape.setOrigin(width / 2.f, height / 2.f);
+    centerText();
 }
 
 void Button::update(Vector2f mousePos) {
@@ -41,14 +52,13 @@ bool Button::isClicked(Vector2f mousePos) const {
     return shape.getGlobalBounds().contains(mousePos);
 }
 
-void Button::draw(RenderWindow& window) {
+void Button::draw(RenderWindow& window) const {
     window.draw(shape);
     window.draw(text);
 }
 
-void Button::draw(RenderTexture& texture) {
-    texture.draw(shape);
-    texture.draw(text);
+bool Button::contains(Vector2f point) const {
+    return shape.getGlobalBounds().contains(point);
 }
 
 Vector2f Button::getPosition() const {

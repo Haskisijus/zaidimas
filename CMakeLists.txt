@@ -14,13 +14,20 @@ add_executable(zaidimas_nd
         src/objects.h
         src/button.h
         src/button.cpp
+        src/gui_element.h
+        src/label.h
+        src/label.cpp
+        src/panel.h
+        src/panel.cpp
         src/asset_manager.h
         src/asset_manager.cpp
         src/graphics_utils.h
         src/graphics_utils.cpp
         src/leaderboard_manager.h
         src/leaderboard_manager.cpp
-        src/leaderboard_manager.cpp
+        src/score_storage.h
+        src/score_storage.cpp
+        src/score_storage.cpp
 )
 
 # ------------------------------------------------------

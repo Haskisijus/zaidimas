@@ -13,6 +13,7 @@ namespace graphics {
     // Platformos piešimo funkcijos
     void DrawPlatform(RenderWindow& window, float x, float y);
     void DrawPlatformScaled(RenderWindow& window, float x, float y, float scaleX, float scaleY);
+    void DrawPlatformTyped(RenderWindow& window, const Plate& plate, float scaleX, float scaleY);
 
     // Fono piešimo funkcija
     void DrawBackground(RenderWindow& window, float scaleX = 1.0f, float scaleY = 1.0f);

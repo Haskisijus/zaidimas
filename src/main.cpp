@@ -16,6 +16,8 @@
 #include "objects.h"
 #include "utils.h"
 #include "button.h"
+#include "label.h"
+#include "panel.h"
 #include "asset_manager.h"
 #include "graphics_utils.h"
 #include "leaderboard_manager.h"
@@ -41,14 +43,16 @@ private:
     Player player;
 
     Text textScore, textAtomicFuel, textStandardFuel, textLowFuel, textNoFuel, textGameOver, textRestart;
-    Text textMenuTitle, textMenuStart, textMenuFullscreen, textMenuLeaderboard, textMenuQuit;
+    Text textMenuTitle, textMenuStart, textMenuLeaderboard, textMenuQuit;
     Text textEnterName, textNameInput, textLeaderboardTitle, textLeaderboardEntries;
-    Text textPauseTitle;
+    Label textPauseTitle;
 
-    // UI Komponenets
+    // ...existing code...
     RectangleShape restartBtn, fuelBar;
-    RectangleShape btnStart, btnFullscreen, btnLeaderboard, btnQuit;
+    RectangleShape btnStart, btnLeaderboard, btnQuit;
     RectangleShape btnBackFromLeaderboard;
+    Panel mainMenuPanel;
+    Panel pauseOverlayPanel;
 
     // Dinaminis skaliavinimas
     float scaleX = 1.0f;
@@ -69,7 +73,6 @@ private:
 
     GameState gameState = MAIN_MENU;
     string playerName = "";
-    bool isFullscreen = false;
 
     function<bool(const Player&, const Plate&)> checkCollision = [](const Player& p, const Plate& pl) {
         return (p.x + PLAYER_WIDTH > pl.x) && (p.x < pl.x + PLATES_WIDTH) &&
@@ -159,13 +162,10 @@ private:
         CenterOrigin(textMenuLeaderboard);
         textMenuLeaderboard.setPosition(WINDOW_WIDTH / 2.0f, 250.f);
 
-        setupText(textMenuFullscreen, "FULLSCREEN: OFF", 20, Color::Cyan);
-        CenterOrigin(textMenuFullscreen);
-        textMenuFullscreen.setPosition(WINDOW_WIDTH / 2.0f, 320.f);
 
         setupText(textMenuQuit, "QUIT", 30, Color::White);
         CenterOrigin(textMenuQuit);
-        textMenuQuit.setPosition(WINDOW_WIDTH / 2.0f, 390.f);
+        textMenuQuit.setPosition(WINDOW_WIDTH / 2.0f, 320.f);
 
         // Name input UI
         setupText(textEnterName, "ENTER YOUR NAME:", 25, Color::White);
@@ -190,26 +190,19 @@ private:
         btnStart.setOrigin(100, 25);
         btnStart.setPosition(WINDOW_WIDTH / 2.0f, 180.f);
 
-        btnLeaderboard.setSize(Vector2f(200, 50));
+        btnLeaderboard.setSize(Vector2f(240, 60));
         btnLeaderboard.setFillColor(Color::Blue);
         btnLeaderboard.setOutlineColor(Color::White);
         btnLeaderboard.setOutlineThickness(2);
-        btnLeaderboard.setOrigin(100, 25);
+        btnLeaderboard.setOrigin(120, 30);
         btnLeaderboard.setPosition(WINDOW_WIDTH / 2.0f, 250.f);
-
-        btnFullscreen.setSize(Vector2f(200, 50));
-        btnFullscreen.setFillColor(Color::Blue);
-        btnFullscreen.setOutlineColor(Color::White);
-        btnFullscreen.setOutlineThickness(2);
-        btnFullscreen.setOrigin(100, 25);
-        btnFullscreen.setPosition(WINDOW_WIDTH / 2.0f, 320.f);
 
         btnQuit.setSize(Vector2f(200, 50));
         btnQuit.setFillColor(Color::Blue);
         btnQuit.setOutlineColor(Color::White);
         btnQuit.setOutlineThickness(2);
         btnQuit.setOrigin(100, 25);
-        btnQuit.setPosition(WINDOW_WIDTH / 2.0f, 390.f);
+        btnQuit.setPosition(WINDOW_WIDTH / 2.0f, 320.f);
 
         btnBackFromLeaderboard.setSize(Vector2f(100, 40));
         btnBackFromLeaderboard.setFillColor(Color::Blue);
@@ -247,6 +240,10 @@ private:
             Plate p;
             p.x = static_cast<float>(rand() % (WINDOW_WIDTH - static_cast<int>(PLATES_WIDTH)));
             p.y = static_cast<float>(WINDOW_HEIGHT) / PLATES_AMOUNT * i;
+
+            // Pradžioje (score = 0) visada žalios platformos - saugus startas
+            p.type = NORMAL_PLATE;
+
             plates.push_back(p);
         }
 
@@ -255,22 +252,6 @@ private:
         player.y = plates[startPlatIdx].y - 73.0f;
     }
 
-    void toggleFullscreen() {
-        isFullscreen = !isFullscreen;
-
-        if (isFullscreen) {
-            VideoMode desktopMode = VideoMode::getDesktopMode();
-            app.create(desktopMode, "CosmoFly", Style::Fullscreen);
-            textMenuFullscreen.setString("FULLSCREEN: ON");
-        } else {
-            app.create(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "CosmoFly", Style::Default);
-            textMenuFullscreen.setString("FULLSCREEN: OFF");
-        }
-
-        updateScaling();
-        rescaleUI();
-        app.setFramerateLimit(60);
-    }
 
     // Pergrupuoti UI elementus pagal ekrano dydį
     void rescaleUI() {
@@ -292,27 +273,19 @@ private:
 
         // LEADERBOARD mygtukas
         btnLeaderboard.setPosition(windowW / 2.0f, windowH * 0.47f);
-        btnLeaderboard.setSize(Vector2f(200 * scaleX, 50 * scaleY));
-        btnLeaderboard.setOrigin(100 * scaleX, 25 * scaleY);
-        textMenuLeaderboard.setCharacterSize(static_cast<int>(30 * scaleX));
+        btnLeaderboard.setSize(Vector2f(240 * scaleX, 60 * scaleY));
+        btnLeaderboard.setOrigin(120 * scaleX, 30 * scaleY);
+        textMenuLeaderboard.setCharacterSize(static_cast<int>(24 * scaleX));
         CenterOrigin(textMenuLeaderboard);
         textMenuLeaderboard.setPosition(windowW / 2.0f, windowH * 0.47f);
 
-        // FULLSCREEN mygtukas
-        btnFullscreen.setPosition(windowW / 2.0f, windowH * 0.60f);
-        btnFullscreen.setSize(Vector2f(200 * scaleX, 50 * scaleY));
-        btnFullscreen.setOrigin(100 * scaleX, 25 * scaleY);
-        textMenuFullscreen.setCharacterSize(static_cast<int>(20 * scaleX));
-        CenterOrigin(textMenuFullscreen);
-        textMenuFullscreen.setPosition(windowW / 2.0f, windowH * 0.60f);
-
         // QUIT mygtukas
-        btnQuit.setPosition(windowW / 2.0f, windowH * 0.73f);
+        btnQuit.setPosition(windowW / 2.0f, windowH * 0.60f);
         btnQuit.setSize(Vector2f(200 * scaleX, 50 * scaleY));
         btnQuit.setOrigin(100 * scaleX, 25 * scaleY);
         textMenuQuit.setCharacterSize(static_cast<int>(30 * scaleX));
         CenterOrigin(textMenuQuit);
-        textMenuQuit.setPosition(windowW / 2.0f, windowH * 0.73f);
+        textMenuQuit.setPosition(windowW / 2.0f, windowH * 0.60f);
     }
 
     void initPauseMenu() {
@@ -320,13 +293,10 @@ private:
 
         // Pause title
         textPauseTitle.setFont(font);
-        textPauseTitle.setString("PAUSED");
+        textPauseTitle.setText("PAUSED");
         textPauseTitle.setCharacterSize(60);
         textPauseTitle.setFillColor(Color::Red);
-        textPauseTitle.setOutlineThickness(2);
-        textPauseTitle.setOutlineColor(Color::Black);
-        FloatRect titleBounds = textPauseTitle.getLocalBounds();
-        textPauseTitle.setOrigin(titleBounds.width / 2.f, titleBounds.height / 2.f);
+        textPauseTitle.centerOrigin();
         textPauseTitle.setPosition(WINDOW_WIDTH / 2.f, 150.f);
 
         // Continue button
@@ -387,9 +357,6 @@ private:
                     else if (btnLeaderboard.getGlobalBounds().contains(Vector2f(pixelPos))) {
                         updateLeaderboardText();
                         gameState = LEADERBOARD;
-                    }
-                    else if (btnFullscreen.getGlobalBounds().contains(Vector2f(pixelPos))) {
-                        toggleFullscreen();
                     }
                     else if (btnQuit.getGlobalBounds().contains(Vector2f(pixelPos))) {
                         app.close();
@@ -498,15 +465,46 @@ private:
                 if (p.y > WINDOW_HEIGHT) {
                     p.y = static_cast<float>(rand() % 10);
                     p.x = static_cast<float>(rand() % (WINDOW_WIDTH - static_cast<int>(PLATES_WIDTH)));
+
+                    // Platformų tipų regeneravimas
+                    // Kol score < 20, tik žalios platformos (saugus pradžios etapas)
+                    if (score < 20) {
+                        p.type = NORMAL_PLATE;
+                    } else {
+                        int randomType = rand() % 100;
+                        if (randomType < 60) {  // 60% - kuro platforma (geltona)
+                            p.type = FUEL_PLATE;
+                            p.fuelAmount = 50 + (rand() % 51);  // 50-100% kuro
+                        } else if (randomType < 70) {  // 10% - paprastoji žalia platforma
+                            p.type = NORMAL_PLATE;
+                        } else {  // 30% - pavojinga raudona platforma
+                            p.type = DANGER_PLATE;
+                        }
+                    }
                 }
             });
         }
 
-        for (const auto& plate : plates) {
+        for (auto& plate : plates) {
             if (checkCollision(player, plate) && dy > 0) {
-                currentFuel = maxFuel;
-                player.y -= dy;
-                dy = 0;
+                if (plate.type == DANGER_PLATE) {
+                    // Pavojinga platforma - tuoj game over!
+                    isGameOver = true;
+                    gameState = GAME_OVER;
+                } else if (plate.type == FUEL_PLATE) {
+                    // Kuro platforma - duoda kurą
+                    float fuelPercentage = plate.fuelAmount / 100.f;
+                    currentFuel += maxFuel * fuelPercentage;
+                    if (currentFuel > maxFuel) currentFuel = maxFuel;
+
+                    player.y -= dy;
+                    dy = 0;
+                } else {
+                    // Normali žalia platforma - standartine logika
+                    currentFuel = maxFuel;
+                    player.y -= dy;
+                    dy = 0;
+                }
                 break;
             }
         }
@@ -550,33 +548,29 @@ private:
         DrawPlatformScaled(window, x, y, scaleX, scaleY);
     }
 
+    void drawPlatformTyped(RenderWindow& window, const Plate& plate) {
+        DrawPlatformTyped(window, plate, scaleX, scaleY);
+    }
+
     void renderMainMenu() {
         DrawBackground(app, scaleX, scaleY);
 
         // Fono efektai - viešos šešėliai
-        RectangleShape titleBackground(Vector2f(300 * scaleX, 150 * scaleY));
-        titleBackground.setFillColor(Color(0, 0, 0, 100));
-        titleBackground.setPosition(50 * scaleX, 20 * scaleY);
-        app.draw(titleBackground);
+        mainMenuPanel.setSize(Vector2f(240 * scaleX, 280 * scaleY));
+        mainMenuPanel.setFillColor(Color(20, 30, 60, 80));
+        mainMenuPanel.setOutline(Color(100, 150, 255, 100), 2.f);
+        mainMenuPanel.setPosition(app.getSize().x / 2.0f - 120 * scaleX, app.getSize().y * 0.3f);
+        mainMenuPanel.draw(app);
 
         app.draw(textMenuTitle);
 
         // Mygtukų konteineris su efektu
-        RectangleShape buttonContainer(Vector2f(240 * scaleX, 280 * scaleY));
-        buttonContainer.setFillColor(Color(20, 30, 60, 80));
-        buttonContainer.setOutlineColor(Color(100, 150, 255, 100));
-        buttonContainer.setOutlineThickness(2.f);
-        buttonContainer.setPosition(app.getSize().x / 2.0f - 120 * scaleX, app.getSize().y * 0.3f);
-        app.draw(buttonContainer);
-
         app.draw(btnStart);
         app.draw(textMenuStart);
 
         app.draw(btnLeaderboard);
         app.draw(textMenuLeaderboard);
 
-        app.draw(btnFullscreen);
-        app.draw(textMenuFullscreen);
 
         app.draw(btnQuit);
         app.draw(textMenuQuit);
@@ -586,7 +580,7 @@ private:
         DrawBackground(app, scaleX, scaleY);
 
         for (const auto& plate : plates) {
-            drawPlatformScaled(app, plate.x, plate.y);
+            drawPlatformTyped(app, plate);
         }
 
         bool hasThrust = (currentFuel > 0) && (Keyboard::isKeyPressed(Keyboard::K) || Keyboard::isKeyPressed(Keyboard::Space));
@@ -677,16 +671,16 @@ private:
         renderGame();
 
         // Tamsus overlay
-        RectangleShape overlay(Vector2f(WINDOW_WIDTH * scaleX, WINDOW_HEIGHT * scaleY));
-        overlay.setFillColor(Color(0, 0, 0, 150));
-        app.draw(overlay);
+        pauseOverlayPanel.setSize(Vector2f(WINDOW_WIDTH * scaleX, WINDOW_HEIGHT * scaleY));
+        pauseOverlayPanel.setFillColor(Color(0, 0, 0, 150));
+        pauseOverlayPanel.setPosition(0.f, 0.f);
+        pauseOverlayPanel.draw(app);
 
         // Pause meniu - sudalytas skalias tekstas
         textPauseTitle.setCharacterSize(static_cast<int>(60 * scaleX));
-        FloatRect titleBounds = textPauseTitle.getLocalBounds();
-        textPauseTitle.setOrigin(titleBounds.width / 2.f, titleBounds.height / 2.f);
+        textPauseTitle.centerOrigin();
         textPauseTitle.setPosition(WINDOW_WIDTH / 2.0f * scaleX, 150.f * scaleY);
-        app.draw(textPauseTitle);
+        textPauseTitle.draw(app);
 
         btnContinue.setPosition(WINDOW_WIDTH / 2.0f * scaleX, 280.f * scaleY);
         btnContinue.draw(app);
