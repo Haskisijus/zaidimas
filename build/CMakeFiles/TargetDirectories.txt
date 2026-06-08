@@ -1,0 +1,3 @@
+/home/deividas/CLionProjects/zaidimas/build/CMakeFiles/zaidimas_nd.dir
+/home/deividas/CLionProjects/zaidimas/build/CMakeFiles/edit_cache.dir
+/home/deividas/CLionProjects/zaidimas/build/CMakeFiles/rebuild_cache.dir
